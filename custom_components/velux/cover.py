@@ -143,6 +143,7 @@ class VeluxCover(VeluxNodeEntity, CoverEntity):
     @property
     def current_cover_position(self) -> int:
         """Return the current position of the cover."""
+        _LOGGER.debug("current_cover_position called on Cover %s" % self.node.name)
         return 100 - self.node.get_position().position_percent
 
     @property
@@ -169,8 +170,12 @@ class VeluxCover(VeluxNodeEntity, CoverEntity):
     def async_register_callbacks(self) -> None:
         """Register callbacks to update hass after device was changed."""
 
-        async def after_update_callback(device) -> None:
+        _LOGGER.debug("Cover registered callbacks: %s", self.node.name)
+
+        async def after_update_callback(node) -> None:
             """Call after device was updated."""
+            _LOGGER.debug("after_update_callback called on cover %s", self.node.name)
+            _LOGGER.debug("after_update_callback called on node %s", node.name)
             self.async_write_ha_state()
             if self.node.is_moving():
                 if not self.is_looping_while_moving:

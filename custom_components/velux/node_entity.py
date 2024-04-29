@@ -26,6 +26,8 @@ class VeluxNodeEntity(Entity):
             self.async_write_ha_state()
 
         self.node.register_device_updated_cb(after_update_callback)
+        self.pyvlx.connection.register_connection_opened_cb(self.after_update_callback)
+        self.pyvlx.connection.register_connection_closed_cb(self.after_update_callback)
 
     async def async_added_to_hass(self):
         """Store register state change callback."""

@@ -45,7 +45,7 @@ from pyvlx.opening_device import (
 from .const import ATTR_VELOCITY, DOMAIN, DUAL_COVER, LOWER_COVER, UPPER_COVER
 from .node_entity import VeluxNodeEntity
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__package__)
 PARALLEL_UPDATES = 1
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=2)
 

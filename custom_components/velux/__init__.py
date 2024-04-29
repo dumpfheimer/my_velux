@@ -12,7 +12,7 @@ from pyvlx import PyVLX
 
 from .const import DOMAIN, PLATFORMS
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__package__)
 
 CONFIG_SCHEMA = vol.Schema(
     vol.All(

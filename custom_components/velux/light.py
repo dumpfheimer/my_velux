@@ -14,7 +14,7 @@ from pyvlx.node import Node
 from .const import DOMAIN
 from .node_entity import VeluxNodeEntity
 
-_LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__package__)
 PARALLEL_UPDATES = 1
 
 

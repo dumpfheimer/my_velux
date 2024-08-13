@@ -18,8 +18,13 @@ class VeluxNodeEntity(Entity):
         self.node: Node = node
 
     @callback
-    def async_register_callbacks(self):
+    async def after_update_callback(self, device):
+        """Call after device was updated."""
+        self.async_write_ha_state()
+
+    async def async_added_to_hass(self) -> None:
         """Register callbacks to update hass after device was changed."""
+        self.node.register_device_updated_cb(self.after_update_callback)
 
         async def after_update_callback(device):
             """Call after device was updated."""
@@ -32,6 +37,10 @@ class VeluxNodeEntity(Entity):
     async def async_added_to_hass(self):
         """Store register state change callback."""
         self.async_register_callbacks()
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Unregister callbacks to update hass after device was changed."""
+        self.node.unregister_device_updated_cb(self.after_update_callback)
 
     @property
     def unique_id(self) -> str:

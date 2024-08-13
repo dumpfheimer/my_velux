@@ -42,7 +42,7 @@ from pyvlx.opening_device import (
     Window,
 )
 
-from .const import ATTR_VELOCITY, DOMAIN, DUAL_COVER, LOWER_COVER, UPPER_COVER
+from .const import ATTR_VELOCITY, DOMAIN, DUAL_COVER, LOWER_COVER, UPPER_COVER, LOGGER
 from .node_entity import VeluxNodeEntity
 
 _LOGGER = logging.getLogger(__package__)
@@ -59,19 +59,19 @@ async def async_setup_entry(
     for node in pyvlx.nodes:
         if isinstance(node, DualRollerShutter):
             entities.append(VeluxDualRollerShutter(node, subtype=DUAL_COVER))
-            _LOGGER.debug("Cover added: %s_%s", node.name, DUAL_COVER)
+            LOGGER.debug("Cover added: %s_%s", node.name, DUAL_COVER)
             entities.append(VeluxDualRollerShutter(node, subtype=UPPER_COVER))
-            _LOGGER.debug("Cover added: %s_%s", node.name, UPPER_COVER)
+            LOGGER.debug("Cover added: %s_%s", node.name, UPPER_COVER)
             entities.append(VeluxDualRollerShutter(node, subtype=LOWER_COVER))
-            _LOGGER.debug("Cover added: %s_%s", node.name, LOWER_COVER)
+            LOGGER.debug("Cover added: %s_%s", node.name, LOWER_COVER)
         elif isinstance(node, Window):
-            _LOGGER.debug("Window will be added: %s", node.name)
+            LOGGER.debug("Window will be added: %s", node.name)
             entities.append(VeluxWindow(hass, node))
         elif isinstance(node, Blind):
-            _LOGGER.debug("Blind will be added: %s", node.name)
+            LOGGER.debug("Blind will be added: %s", node.name)
             entities.append(VeluxBlind(node))
         elif isinstance(node, (OpeningDevice, Blind)):
-            _LOGGER.debug("Cover will be added: %s", node.name)
+            LOGGER.debug("Cover will be added: %s", node.name)
             entities.append(VeluxCover(node))
     async_add_entities(entities)
 
@@ -240,7 +240,7 @@ class VeluxWindow(VeluxCover):
 
         self.coordinator: DataUpdateCoordinator = DataUpdateCoordinator(
             self._hass,
-            _LOGGER,
+            LOGGER,
             name=self.unique_id,
             update_method=self.async_update_limitation,
             update_interval=DEFAULT_SCAN_INTERVAL,
@@ -257,7 +257,7 @@ class VeluxWindow(VeluxCover):
             self._extra_attr_limitation_min = limitation.min_value
             self._extra_attr_limitation_max = limitation.max_value
         except PyVLXException:
-            _LOGGER.error("Error fetch limitation data for cover %s", self.name)
+            LOGGER.error("Error fetch limitation data for cover %s", self.name)
 
     @property
     def extra_state_attributes(self) -> dict[str, int | None]:

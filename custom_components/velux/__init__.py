@@ -7,10 +7,11 @@ from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.helpers.typing import ConfigType
 from pyvlx import PyVLX
 
-from .const import DOMAIN, PLATFORMS
+from .const import DOMAIN, LOGGER, PLATFORMS
 
 _LOGGER = logging.getLogger(__package__)
 
@@ -31,13 +32,18 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up velux component via configuration.yaml."""
-    if DOMAIN in config:
-        hass.async_create_task(
-            hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data=config[DOMAIN]
-            )
+    """Set up the velux component."""
+    if DOMAIN not in config:
+        return True
+
+    hass.async_create_task(
+        hass.config_entries.flow.async_init(
+            DOMAIN,
+            context={"source": SOURCE_IMPORT},
+            data=config[DOMAIN],
         )
+    )
+
     return True
 
 
@@ -53,7 +59,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     try:
         await pyvlx.connect()
     except OSError as ex:
-        _LOGGER.warning("Unable to connect to KLF200: %s", str(ex))
+        LOGGER.warning("Unable to connect to KLF200: %s", str(ex))
         raise ConfigEntryNotReady from ex
 
     # Store pyvlx in hass data
@@ -93,4 +99,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     for component in PLATFORMS:
         await hass.config_entries.async_forward_entry_unload(entry, component)
 
+    return True
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: DeviceEntry
+) -> bool:
+    """Remove a config entry from a device."""
     return True

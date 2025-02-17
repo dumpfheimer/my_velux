@@ -54,6 +54,12 @@ class VeluxSwitch(VeluxNodeEntity, SwitchEntity):
         """Turn the switch off."""
         await self.node.set_off()
 
+    @property
+    def is_on(self) -> bool:
+        """Return true if light is on."""
+        return self.node.is_on()
+
+
 
 class VeluxDefaultVelocityUsedSwitch(SwitchEntity, RestoreEntity):
     """Representation of a Velux physical switch."""
@@ -128,6 +134,12 @@ class VeluxHouseStatusMonitor(SwitchEntity):
         """Turn the switch off."""
         await self.pyvlx.klf200.house_status_monitor_disable(pyvlx=self.pyvlx)
 
+    @property
+    def is_on(self) -> bool:
+        """Return true if light is on."""
+        return self.pyvlx.klf200.house_status_monitor_enabled
+
+
 
 class VeluxHeartbeat(SwitchEntity):
     """Representation of a Velux Heartbeat switch."""
@@ -152,6 +164,12 @@ class VeluxHeartbeat(SwitchEntity):
         """Turn the switch off."""
         await self.pyvlx.heartbeat.stop()
 
+    @property
+    def is_on(self) -> bool:
+        """Return true if light is on."""
+        return not self.pyvlx.heartbeat.stopped
+
+
 
 class VeluxHeartbeatLoadAllStates(SwitchEntity):
     """Representation of a VeluxHeartbeatLoadAllStates switch."""
@@ -175,3 +193,9 @@ class VeluxHeartbeatLoadAllStates(SwitchEntity):
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the switch off."""
         self.pyvlx.heartbeat.load_all_states = False
+
+    @property
+    def is_on(self) -> bool:
+        """Return true if light is on."""
+        return self.pyvlx.heartbeat.load_all_states
+

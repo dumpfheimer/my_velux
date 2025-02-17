@@ -58,6 +58,7 @@ class VeluxOpenOrientation(RestoreNumber):
     def set_native_value(self, value: float) -> None:
         """Update the current value."""
         self.node.open_orientation_target = int(value)
+        self._attr_native_value = int(value)
 
     async def async_internal_added_to_hass(self) -> None:
         """Restore number from last number data."""
@@ -95,6 +96,7 @@ class VeluxCloseOrientation(RestoreNumber):
     def set_native_value(self, value: float) -> None:
         """Update the current value."""
         self.node.close_orientation_target = int(value)
+        self._attr_native_value = int(value)
 
     async def async_internal_added_to_hass(self) -> None:
         """Restore number from last number data."""
@@ -171,6 +173,7 @@ class VeluxHeartbeatInterval(RestoreNumber):
     def set_native_value(self, value: float) -> None:
         """Update the current value."""
         self.pyvlx.heartbeat.interval = int(value)
+        self._attr_native_value = int(value)
 
     async def async_internal_added_to_hass(self) -> None:
         """Restore number from last number data."""

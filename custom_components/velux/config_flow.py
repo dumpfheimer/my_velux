@@ -6,9 +6,7 @@ from pyvlx import PyVLX, PyVLXException
 from pyvlx.discovery import VeluxDiscovery, VeluxHost
 import voluptuous as vol
 
-from homeassistant.components.dhcp import DhcpServiceInfo
 from homeassistant.components import zeroconf
-from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import ConfigEntryState, ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_MAC, CONF_NAME, CONF_PASSWORD
 import homeassistant.helpers.config_validation as cv
@@ -18,6 +16,9 @@ from homeassistant.helpers.selector import (
     SelectSelectorConfig,
     SelectSelectorMode,
 )
+from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+
 
 from .const import DOMAIN, LOGGER
 
@@ -67,7 +68,7 @@ class VeluxConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore
             if self.hosts:
                 for host in self.hosts:
                     if user_input[CONF_HOST] == host.ip_address:
-                        await self.async_set_unique_id(host.hostname)
+                        await self.async_set_unique_id(host.hostname.replace("LAN_", ""))
                         self._abort_if_unique_id_configured(
                             updates={CONF_HOST: host.ip_address}
                         )
@@ -144,9 +145,7 @@ class VeluxConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore
         # The hostname ends with the last 4 digits of the device MAC address.
         self.discovery_data[CONF_HOST] = discovery_info.ip
         self.discovery_data[CONF_MAC] = format_mac(discovery_info.macaddress)
-        self.discovery_data[CONF_NAME] = discovery_info.hostname.upper().replace(
-            "LAN_", ""
-        )
+        self.discovery_data[CONF_NAME] = discovery_info.hostname.upper().replace("LAN_", "")
         LOGGER.debug(f"Discovered by DHCP with Info: {discovery_info}")
         await self.async_set_unique_id(self.discovery_data[CONF_NAME])
         self._abort_if_unique_id_configured(

@@ -137,6 +137,8 @@ class VeluxDefaultVelocity(RestoreNumber):
         """Restore number from last number data."""
         await super().async_internal_added_to_hass()
 
+        LOGGER.info(f"restored numeric value for {self.name}: {str(s)}")  # noqa: G004
+
         value: NumberExtraStoredData | None = await self.async_get_last_number_data()
         if value is not None and value.native_value is not None:
             try:

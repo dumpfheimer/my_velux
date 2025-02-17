@@ -73,7 +73,7 @@ class VeluxDefaultVelocityUsedSwitch(SwitchEntity, RestoreEntity):
         await super().async_added_to_hass()
         s = await self.async_get_last_state()
 
-        LOGGER.info(f"restored numeric value for {self.name}: {str(s)}")  # noqa: G004
+        LOGGER.info(f"restored value for {self.name}: {str(s)}")  # noqa: G004
 
         if s is not None and s.state is not None and s.state == "on":
             self.turn_on()

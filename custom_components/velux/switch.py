@@ -95,8 +95,14 @@ class VeluxDefaultVelocityUsedSwitch(SwitchEntity, RestoreEntity):
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
-        LOGGER.debug("VeluxDefaultVelocityUsedSwitch: turned on %s", self.node.node_id)
+        LOGGER.debug("VeluxDefaultVelocityUsedSwitch: turned off %s", self.node.node_id)
         self.node.use_default_velocity = False
+
+    @property
+    def is_on(self) -> bool:
+        """Return true if light is on."""
+        return self.node.use_default_velocity
+
 
 
 class VeluxHouseStatusMonitor(SwitchEntity):

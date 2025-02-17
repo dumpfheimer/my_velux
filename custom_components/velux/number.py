@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from pyvlx import PyVLX
 from pyvlx.opening_device import Blind, DualRollerShutter, OpeningDevice
 
-from .const import DOMAIN
+from .const import DOMAIN, LOGGER
 
 PARALLEL_UPDATES = 1
 

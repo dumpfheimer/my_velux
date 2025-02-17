@@ -20,7 +20,7 @@ class VeluxNodeEntity(Entity):
 
     @property
     def node(self) -> Node:
-        return pyvlx.nodes.__getitem__(self.node_id)
+        return self.pyvlx.nodes.__getitem__(self.node_id)
 
     @node.setter
     def node(self, node: Node):

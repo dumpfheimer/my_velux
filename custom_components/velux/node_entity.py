@@ -15,7 +15,7 @@ class VeluxNodeEntity(Entity):
 
     def __init__(self, node: Node) -> None:
         """Initialize the Velux device."""
-        self.node_id = node.id
+        self.node_id = node.node_id
         self.pyvlx = node.pyvlx
 
     @property

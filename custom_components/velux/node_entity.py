@@ -17,6 +17,7 @@ class VeluxNodeEntity(Entity):
     def __init__(self, node: Node, entry: ConfigEntry) -> None:
         """Initialize the Velux device."""
         self.node_id = node.node_id
+        self.pyvlx = node.pyvlx
         self._attr_unique_id = (
             node.serial_number
             if node.serial_number

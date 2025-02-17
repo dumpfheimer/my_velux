@@ -90,10 +90,12 @@ class VeluxDefaultVelocityUsedSwitch(SwitchEntity, RestoreEntity):
 
     def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
+        LOGGER.debug("VeluxDefaultVelocityUsedSwitch: turned on %s", self.node.node_id)
         self.node.use_default_velocity = True
 
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
+        LOGGER.debug("VeluxDefaultVelocityUsedSwitch: turned on %s", self.node.node_id)
         self.node.use_default_velocity = False
 
 

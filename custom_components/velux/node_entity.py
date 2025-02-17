@@ -22,6 +22,10 @@ class VeluxNodeEntity(Entity):
     def node(self) -> Node:
         return pyvlx.nodes.__getitem__(self.node_id)
 
+    @node.setter
+    def node(self, node: Node):
+        self.node_id = node.node_id
+
     @callback
     async def after_update_callback(self, device):
         """Call after device was updated."""

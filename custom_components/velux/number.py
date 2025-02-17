@@ -131,6 +131,7 @@ class VeluxDefaultVelocity(RestoreNumber):
 
     def set_native_value(self, value: float) -> None:
         """Update the current value."""
+        LOGGER.info(f"set_native_value called for default velocity of {self.name}: {str(value)}")  # noqa: G004
         self.node.default_velocity = int(value)  # type: ignore[assignment]
 
     async def async_added_to_hass(self) -> None:
@@ -142,6 +143,7 @@ class VeluxDefaultVelocity(RestoreNumber):
         value: NumberExtraStoredData | None = await self.async_get_last_number_data()
         if value is not None and value.native_value is not None:
             try:
+                LOGGER.info(f"restored numeric value for {self.name}: {str(value.native_value)}")  # noqa: G004
                 self.set_native_value(value.native_value)
             except (TypeError, ValueError):
                 self.set_native_value(100)

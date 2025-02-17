@@ -15,7 +15,12 @@ class VeluxNodeEntity(Entity):
 
     def __init__(self, node: Node) -> None:
         """Initialize the Velux device."""
-        self.node: Node = node
+        self.node_id = node.id
+        self.pyvlx = node.pyvlx
+
+    @property
+    def node(self) -> Node:
+        return pyvlx.nodes.__getitem__(self.node_id)
 
     @callback
     async def after_update_callback(self, device):

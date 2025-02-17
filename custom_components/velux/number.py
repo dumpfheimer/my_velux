@@ -133,6 +133,7 @@ class VeluxDefaultVelocity(RestoreNumber):
         """Update the current value."""
         LOGGER.info(f"set_native_value called for default velocity of {self.name}: {str(value)}")  # noqa: G004
         self.node.default_velocity = int(value)  # type: ignore[assignment]
+        self._attr_native_value = int(value)
 
     async def async_added_to_hass(self) -> None:
         """Restore number from last number data."""

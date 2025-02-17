@@ -197,6 +197,9 @@ class VeluxCover(VeluxNodeEntity, CoverEntity):
             and "velocity" in inspect.getfullargspec(self.node.close).args
         ):
             close_args["velocity"] = kwargs["velocity"]
+        _LOGGER.debug("Cover closing: %s", self.node.name)
+        _LOGGER.debug("Cover default velocity: %s", str(self.node.default_velocity))
+        _LOGGER.debug("Cover use default velocity: %s", str(self.node.use_default_velocity))
         await self.node.close(**close_args)
 
     async def async_open_cover(self, **kwargs: Any) -> None:

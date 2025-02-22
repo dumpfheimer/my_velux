@@ -27,16 +27,16 @@ async def async_setup_entry(
     for node in pyvlx.nodes:
         if isinstance(node, LighteningDevice):
             _LOGGER.debug("Light will be added: %s", node.name)
-            entities.append(VeluxLight(node))
+            entities.append(VeluxLight(node, entry))
     async_add_entities(entities)
 
 
 class VeluxLight(VeluxNodeEntity, LightEntity):
     """Representation of a Velux light."""
 
-    def __init__(self, node: Node) -> None:
+    def __init__(self, node: Node, entry: ConfigEntry) -> None:
         """Initialize the Velux light."""
-        super().__init__(node)
+        super().__init__(node, entry)
 
     _attr_supported_color_modes = {ColorMode.BRIGHTNESS}
     _attr_color_mode = ColorMode.BRIGHTNESS

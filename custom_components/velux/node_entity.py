@@ -29,6 +29,10 @@ class VeluxNodeEntity(Entity):
             name=self._attr_name,
             via_device=(DOMAIN, str(entry.unique_id)),
         )
+        # Keep references to callbacks for unregistering
+        self._device_updated_cb = None
+        self._conn_opened_cb = None
+        self._conn_closed_cb = None
 
     @property
     def node(self) -> Node:
@@ -38,27 +42,38 @@ class VeluxNodeEntity(Entity):
     def node(self, node: Node):
         self.node_id = node.node_id
 
-    @callback
-    async def after_update_callback(self, device):
-        """Call after device was updated."""
-        self.async_write_ha_state()
+    def async_register_callbacks(self) -> None:
+        """Register callbacks to update hass after device or connection changes."""
 
-    async def async_added_to_hass(self) -> None:
-        """Register callbacks to update hass after device was changed."""
-        self.node.register_device_updated_cb(self.after_update_callback)
-
-        async def after_update_callback(device):
-            """Call after device was updated."""
+        @callback
+        def _device_updated(_device) -> None:
             self.async_write_ha_state()
 
-        self.node.register_device_updated_cb(after_update_callback)
-        self.pyvlx.connection.register_connection_opened_cb(self.after_update_callback)
-        self.pyvlx.connection.register_connection_closed_cb(self.after_update_callback)
+        @callback
+        def _conn_changed() -> None:
+            self.async_write_ha_state()
 
-    async def async_added_to_hass(self):
-        """Store register state change callback."""
+        # store refs to unregister later
+        self._device_updated_cb = _device_updated
+        self._conn_opened_cb = _conn_changed
+        self._conn_closed_cb = _conn_changed
+
+        self.node.register_device_updated_cb(self._device_updated_cb)
+        self.pyvlx.connection.register_connection_opened_cb(self._conn_opened_cb)
+        self.pyvlx.connection.register_connection_closed_cb(self._conn_closed_cb)
+
+    async def async_added_to_hass(self) -> None:
+        """Register callbacks when entity is added to hass."""
         self.async_register_callbacks()
 
     async def async_will_remove_from_hass(self) -> None:
-        """Unregister callbacks to update hass after device was changed."""
-        self.node.unregister_device_updated_cb(self.after_update_callback)
+        """Unregister callbacks when entity is removed from hass."""
+        if self._device_updated_cb is not None:
+            self.node.unregister_device_updated_cb(self._device_updated_cb)
+            self._device_updated_cb = None
+        if self._conn_opened_cb is not None:
+            self.pyvlx.connection.unregister_connection_opened_cb(self._conn_opened_cb)
+            self._conn_opened_cb = None
+        if self._conn_closed_cb is not None:
+            self.pyvlx.connection.unregister_connection_closed_cb(self._conn_closed_cb)
+            self._conn_closed_cb = None
